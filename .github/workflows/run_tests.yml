@@ -39,20 +39,22 @@ jobs:
     runs-on: ubuntu-latest
     container: mbedos/mbed-os-env:latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
       - name: Install dependencies
         run: |
-          apt-get update && apt-get install -y valgrind gcovr
-          pip3 install virtualenv
+          apt-get update
+          apt-get install -y lavacli curl
 
-      - name: Boostrap of environment
+      - name: launch lava job
+        env:
+          LAVA_SERVER_TOKEN: ${{ secrets.LAVA_SERVER_TOKEN }}
+          LAVA_SERVER_URL: ${{ secrets.LAVA_SERVER_URL }}
+          USER_TOKEN: ${{ secrets.USER_TOKEN }}
+          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          REPOSITORY: paul-szczepanek-arm/mbed-os-experimental-ble-services
         run: |
-          ./scripts/bootstrap.sh
+          git clone https://github.com/ARMmbed/mbed-os-lava-scripts.git mbed-os-lava-scripts
+          lavacli identities add --uri "$LAVA_SERVER_URL" --username lava-admin --token "$LAVA_SERVER_TOKEN" default
+          cd mbed-os-lava-scripts/jobs
+          ./launch_job.sh services_test.yaml ${REPOSITORY} ${SHA} ${USER_TOKEN}
+          curl --user ${USER_TOKEN} -H "POST" https://api.github.com/repos/${REPOSITORY}/statuses/${SHA} -d "{\"state\": \"pending\", \"context\": \"lava-test\" }"
 
-      - name: Build
-        run: |
-          ./tests/TESTS/build.sh -s DeviceInformation -t GCC_ARM -m NRF52840_DK
-          ./tests/TESTS/build.sh -s LinkLoss -t GCC_ARM -m NRF52840_DK
-          ./tests/TESTS/build.sh -s LinkLoss -t GCC_ARM -m DISCO_L496AG
