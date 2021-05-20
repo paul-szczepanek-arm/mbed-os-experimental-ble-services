@@ -58,3 +58,4 @@ jobs:
           ./launch_job.sh services_test.yaml ${REPOSITORY} ${SHA} ${USER_TOKEN}
           curl --user ${USER_TOKEN} -H "POST" https://api.github.com/repos/${REPOSITORY}/statuses/${SHA} -d "{\"state\": \"pending\", \"context\": \"lava-test\" }"
 
+
