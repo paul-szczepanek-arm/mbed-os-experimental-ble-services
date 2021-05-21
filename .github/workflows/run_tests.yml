@@ -55,7 +55,14 @@ jobs:
           git clone https://github.com/ARMmbed/mbed-os-lava-scripts.git mbed-os-lava-scripts
           lavacli identities add --uri "$LAVA_SERVER_URL" --username lava-admin --token "$LAVA_SERVER_TOKEN" default
           cd mbed-os-lava-scripts/jobs
-          ./launch_job.sh services_test.yaml ${REPOSITORY} ${SHA} ${USER_TOKEN}
+          LAVA_JOB_NO=`./launch_job.sh services_test.yaml ${REPOSITORY} ${SHA} ${USER_TOKEN}`
+          cd ../..
           curl --user ${USER_TOKEN} -H "POST" https://api.github.com/repos/${REPOSITORY}/statuses/${SHA} -d "{\"state\": \"pending\", \"context\": \"lava-test\" }"
+          lavacli jobs logs $LAVA_JOB_NO > ble-services-integration-test.log
+      - name: Upload integration test logs
+        uses: actions/upload-artifact@v2.2.3
+        with: 
+          name: integration-test-log
+          path: ble-services-integration-test.log
 
 
