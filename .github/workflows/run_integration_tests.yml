@@ -4,6 +4,8 @@ on:
     workflows: ["Run tests"]
     types:
       - completed
+    branches:
+      - main
 jobs:
   run-integration-tests:
     name: Integration tests
