@@ -36,3 +36,4 @@ jobs:
         with:
           name: integration-test-log
           path: ble-services-integration-test.log
+
