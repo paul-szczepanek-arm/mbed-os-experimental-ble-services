@@ -67,7 +67,3 @@ jobs:
           name: LinkLoss-GCC_ARM-NRF52840_DK-${{ github.event.pull_request.head.sha || github.sha }}
           path: ./tests/TESTS/LinkLoss/device/BUILD/NRF52840_DK/GCC_ARM/device.hex
 
-
-
-
-
