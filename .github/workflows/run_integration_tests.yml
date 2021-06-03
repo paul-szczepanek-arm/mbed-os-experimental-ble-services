@@ -1,11 +1,10 @@
 name: Run integration tests
 on:
   workflow_run:
-    workflows: ["Run tests"]
+    workflows:
+      - Run tests
     types:
       - completed
-    branches:
-      - main
 jobs:
   run-integration-tests:
     name: Integration tests
