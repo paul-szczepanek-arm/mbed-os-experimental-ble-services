@@ -85,10 +85,13 @@ jobs:
           lavacli identities add --uri "$LAVA_SERVER_URL" --username lava-admin --token "$LAVA_SERVER_TOKEN" default
           cd mbed-os-lava-scripts/jobs
           LAVA_JOB_NO=`./launch_job.sh services_test.yaml ${REPOSITORY} ${SHA} ${USER_TOKEN}`
+          echo "Runnin lava job $LAVA_JOB_NO"
           cd ../..
           curl --user ${USER_TOKEN} -H "POST" https://api.github.com/repos/${REPOSITORY}/statuses/${SHA} -d "{\"state\": \"pending\", \"context\": \"lava-test\" }"
           lavacli jobs wait $LAVA_JOB_NO
+          echo "lava job $LAVA_JOB_NO completed"
           lavacli jobs logs $LAVA_JOB_NO > ble-services-integration-test.log
+          echo "log received"
       - name: Upload integration test logs
         uses: actions/upload-artifact@v2.2.3
         with:
