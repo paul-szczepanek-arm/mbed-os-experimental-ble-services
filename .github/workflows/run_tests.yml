@@ -86,7 +86,6 @@ jobs:
           lavacli jobs wait $LAVA_JOB_NO
           echo "lava job $LAVA_JOB_NO completed"
           lavacli jobs logs $LAVA_JOB_NO > ble-services-integration-test.log
-          echo "log received"
       - name: Upload integration test logs
         uses: actions/upload-artifact@v2.2.3
         with:
