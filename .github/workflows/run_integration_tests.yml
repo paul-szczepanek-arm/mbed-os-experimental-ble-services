@@ -23,22 +23,16 @@ jobs:
           name: launch lava job
           conclusion: ${{ job.status }}
 
-      - name: launch lava job
+      - name: get lava log
         env:
           LAVA_SERVER_TOKEN: ${{ secrets.LAVA_SERVER_TOKEN }}
           LAVA_SERVER_URL: ${{ secrets.LAVA_SERVER_URL }}
           USER_TOKEN: ${{ secrets.USER_TOKEN }}
-          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
           REPOSITORY: paul-szczepanek-arm/mbed-os-experimental-ble-services
         run: |
-          echo "Running job for SHA $SHA"
-          git clone https://github.com/ARMmbed/mbed-os-lava-scripts.git mbed-os-lava-scripts
           lavacli identities add --uri "$LAVA_SERVER_URL" --username lava-admin --token "$LAVA_SERVER_TOKEN" default
-          cd mbed-os-lava-scripts/jobs
-          LAVA_JOB_NO=`./launch_job.sh services_test.yaml ${REPOSITORY} ${SHA} ${USER_TOKEN}`
-          echo "Running lava job $LAVA_JOB_NO"
-          cd ../..
-          curl --user ${USER_TOKEN} -H "POST" https://api.github.com/repos/${REPOSITORY}/statuses/${SHA} -d "{\"state\": \"pending\", \"context\": \"lava-test\" }"
+          echo "we need to find a way to share data between workflows"
+          LAVA_JOB_NO=`lavacli jobs list | head -2 | tail -1 | cut -d':' -f 1 | cut -d' ' -f 2`
           lavacli jobs wait $LAVA_JOB_NO
           echo "lava job $LAVA_JOB_NO completed"
           lavacli jobs logs $LAVA_JOB_NO > ble-services-integration-test.log
