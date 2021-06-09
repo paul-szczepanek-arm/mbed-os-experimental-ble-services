@@ -43,7 +43,6 @@ jobs:
           lavacli jobs logs $LAVA_JOB_NO > ble-services-integration-test.log
           sed -i "s/${{ secrets.USER_TOKEN }}/==USER_TOKEN==" ble-services-integration-test.log
           sed -i "s/${{ secrets.LAVA_SERVER_TOKEN }}/==LAVA_SERVER_TOKEN==" ble-services-integration-test.log
-          sed -i "s/${{ secrets.LAVA_SERVER_URL }}/==LAVA_SERVER_URL==" ble-services-integration-test.log
       - name: Upload integration test logs
         uses: actions/upload-artifact@v2.2.3
         with:
