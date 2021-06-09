@@ -69,11 +69,9 @@ jobs:
 
       - name: Trigger lava workflow
         uses: benc-uk/workflow-dispatch@v1
-        env:
-          SHA:
         with:
           workflow: Run integration tests
-          token: ${{ secrets.USER_TOKEN }}
+          token: ${{ secrets.PAT }}
           inputs: '{ "SHA": "${{ github.event.pull_request.head.sha || github.sha }}" }'
 
       - name: set lava job status to pending
