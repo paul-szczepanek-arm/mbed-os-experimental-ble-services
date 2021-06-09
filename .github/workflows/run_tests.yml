@@ -71,6 +71,7 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: Run integration tests
+          ref: ${{ github.event.pull_request.head.ref }}
           token: ${{ secrets.PAT }}
           inputs: '{ "SHA": "${{ github.event.pull_request.head.sha || github.sha }}" }'
 
